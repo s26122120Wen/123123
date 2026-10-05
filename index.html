@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>作品集入口 | Portfolio Index</title>
+  
+  <!-- 導入 Google Fonts (Noto Serif TC, Outfit) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       變數與基礎設定 (莫蘭迪色系 Morandi Style)
+       ========================================================================== */
+    :root {
+      --bg-color: #f7f5f0;           /* 奶油米白背景 */
+      --card-bg: #ffffff;           /* 卡片純白背景 */
+      --text-main: #3d4340;         /* 莫蘭迪深灰綠 */
+      --text-muted: #8c9691;        /* 淡灰綠 */
+      --accent-green: #6a7f72;      /* 莫蘭迪質感綠 */
+      --accent-soft: #e8ece9;       /* 柔綠淺底 */
+      --locked-bg: #eaeaea;         /* 鎖定狀態卡片背景 */
+      --locked-text: #a0a0a0;       /* 鎖定文字顏色 */
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
+      --shadow-hover: 0 12px 24px rgba(106, 127, 114, 0.15);
+      --transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Outfit', 'Noto Serif TC', serif, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* 頂部柔和暈光裝飾 */
+    .bg-glow {
+      position: absolute;
+      top: -150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(106, 127, 114, 0.08) 0%, rgba(247, 245, 240, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 960px;
+      width: 100%;
+      z-index: 1;
+    }
+
+    /* ==========================================================================
+       個人資料卡片 (Profile Header)
+       ========================================================================== */
+    .profile-card {
+      text-align: center;
+      margin-bottom: 40px;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(8px);
+      padding: 32px 24px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .avatar-wrapper {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
+    .avatar {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #fff;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      transition: var(--transition);
+    }
+
+    .avatar-wrapper:hover .avatar {
+      transform: scale(1.05);
+    }
+
+    .status-badge {
+      position: absolute;
+      bottom: 4px;
+      right: 0;
+      background-color: var(--accent-green);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 12px;
+      border: 2px solid #fff;
+    }
+
+    .user-name {
+      font-size: 1.8rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .user-bio {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    /* 進度條設計 */
+    .progress-container {
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background-color: #e0ded8;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: var(--accent-green);
+      border-radius: 10px;
+      transition: width 0.8s ease;
+    }
+
+    .progress-text {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    /* ==========================================================================
+       關卡卡片網格 (Grid Layout)
+       ========================================================================== */
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr); /* 電腦端 4 行排列 */
+      gap: 18px;
+    }
+
+    /* 卡片基礎樣式 */
+    .card {
+      position: relative;
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 20px;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      text-decoration: none;
+      border: 1px solid rgba(0, 0, 0, 0.03);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .card-status {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card-number {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-top: 6px;
+    }
+
+    /* --------------------------------------------------------------------------
+       已解鎖卡片樣式 (Unlocked)
+       -------------------------------------------------------------------------- */
+    .card.unlocked {
+      color: var(--text-main);
+      border: 1px solid rgba(106, 127, 114, 0.2);
+      cursor: pointer;
+    }
+
+    .card.unlocked .badge {
+      background-color: var(--accent-soft);
+      color: var(--accent-green);
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    .card.unlocked .card-number {
+      color: var(--accent-green);
+    }
+
+    .card.unlocked .card-arrow {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      font-size: 0.9rem;
+      color: var(--accent-green);
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: var(--transition);
+    }
+
+    /* 已解鎖 Hover 動畫 */
+    .card.unlocked:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--accent-green);
+    }
+
+    .card.unlocked:hover .card-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* --------------------------------------------------------------------------
+       未解鎖卡片樣式 (Locked)
+       -------------------------------------------------------------------------- */
+    .card.locked {
+      background-color: var(--locked-bg);
+      color: var(--locked-text);
+      cursor: not-allowed;
+      opacity: 0.75;
+    }
+
+    .card.locked .card-number,
+    .card.locked .card-title {
+      color: var(--locked-text);
+    }
+
+    .card.locked .lock-icon {
+      font-size: 0.9rem;
+      transition: transform 0.2s ease;
+    }
+
+    /* 未解鎖 Hover 鎖頭晃動動畫 */
+    .card.locked:hover {
+      transform: translateY(-2px);
+    }
+
+    .card.locked:hover .lock-icon {
+      animation: shake 0.4s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-12deg); }
+      75% { transform: rotate(12deg); }
+    }
+
+    /* ==========================================================================
+       頁尾 (Footer)
+       ========================================================================== */
+    footer {
+      text-align: center;
+      margin-top: 48px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       響應式設計 (RWD)
+       ========================================================================== */
+    /* 平板尺寸 (900px 以下)：改為 3 欄 */
+    @media (max-width: 900px) {
+      .grid-container {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* 手機尺寸 (600px 以下)：改為 2 欄 */
+    @media (max-width: 600px) {
+      body {
+        padding: 24px 12px;
+      }
+      .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .card {
+        padding: 16px;
+        min-height: 105px;
+      }
+      .user-name {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 頂部背景微光裝飾 -->
+  <div class="bg-glow"></div>
+
+  <div class="container">
+    
+    <!-- 個人資料卡片區塊 -->
+    <header class="profile-card">
+      <div class="avatar-wrapper">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300" alt="大頭貼" class="avatar">
+        <span class="status-badge" title="學習進度中">LV.2</span>
+      </div>
+      <h1 class="user-name">Your Name</h1>
+      <p class="user-bio">靜心寫程式，用程式紀錄每一個學習里程碑。</p>
+      
+      <!-- 遊戲化進度條 -->
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 12.5%;"></div>
+        </div>
+        <div class="progress-text">關卡完成度：2 / 16 (12.5%)</div>
+      </div>
+    </header>
+
+    <!-- 關卡按鈕網格 (16 個) -->
+    <main class="grid-container">
+      
+      <!-- Week 1 (已解鎖) -->
+      <a href="w1/index.html" class="card unlocked">
+        <div class="card-status">
+          <span class="badge">已完成</span>
+        </div>
+        <div class="card-number">WEEK 01</div>
+        <div class="card-title">數位名片</div>
+        <div class="card-arrow">➔</div>
+      </a>
+
+      <!-- Week 2 (已解鎖) -->
+      <a href="w2/index.html" class="card unlocked">
+        <div class="card-status">
+          <span class="badge">已完成</span>
+        </div>
+        <div class="card-number">WEEK 02</div>
+        <div class="card-title">今天吃甚麼?</div>
+        <div class="card-arrow">➔</div>
+      </a>
+
+      <!-- Week 3 (未解鎖) -->
+      <div class="card locked">
+        <div class="card-status">
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="card-number">WEEK 03</div>
+        <div class="card-title">尚未解鎖</div>
+      </div>
+
+      <!-- Week 4 (未解鎖) -->
+      <div class="card locked">
+        <div class="card-status">
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="card-number">WEEK 04</div>
+        <div class="card-title">尚未解鎖</div>
+      </div>
+
+      <!-- Week 5 (未解鎖) -->
+      <div class="card locked">
+        <div class="card-status">
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="card-number">WEEK 05</div>
+        <div class="card-title">尚未解鎖</div>
+      </div>
+
+      <!-- Week 6 (未解鎖) -->
+      <div class="card locked">
+        <div class="card-status">
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="card-number">WEEK 06</div>
+        <div class="card-title">尚未解鎖</div>
+      </div>
+
+      <!-- Week 7 (未解鎖) -->
+      <div class="card locked">
+        <div class="card-status">
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="card-number">WEEK 07</div>
+        <div class="card-title">尚未解鎖</div>
+      </div>
+
+      <!-- Week 8 (未解鎖) -->
+      <div class="card locked">
+        <div class="card-status">
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="card-number">WEEK 08</div>
+        <div class="card-title">尚未解鎖</div>
+      </div>
+
+      <!-- Week 9 (未解鎖) -->
+      <div class="card locked">
+        <div class="card-status">
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="card-number">WEEK 09</div>
+        <div class="card-title">尚未解鎖</div>
+      </div>
+
+      <!-- Week 10 (未解鎖) -->
+      <div class="card locked">
+        <div class="card-status">
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="card-number">WEEK 10</div>
+        <div class="card-title">尚未解鎖</div>
+      </div>
+
+      <!-- Week 11 (未解鎖) -->
+      <div class="card locked">
+        <div class="card-status">
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="card-number">WEEK 11</div>
+        <div class="card-title">尚未解鎖</div>
+      </div>
+
+      <!-- Week 12 (未解鎖) -->
+      <div class="card locked">
+        <div class="card-status">
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="card-number">WEEK 12</div>
+        <div class="card-title">尚未解鎖</div>
+      </div>
+
+      <!-- Week 13 (未解鎖) -->
+      <div class="card locked">
+        <div class="card-status">
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="card-number">WEEK 13</div>
+        <div class="card-title">尚未解鎖</div>
+      </div>
+
+      <!-- Week 14 (未解鎖) -->
+      <div class="card locked">
+        <div class="card-status">
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="card-number">WEEK 14</div>
+        <div class="card-title">尚未解鎖</div>
+      </div>
+
+      <!-- Week 15 (未解鎖) -->
+      <div class="card locked">
+        <div class="card-status">
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="card-number">WEEK 15</div>
+        <div class="card-title">尚未解鎖</div>
+      </div>
+
+      <!-- Week 16 (未解鎖) -->
+      <div class="card locked">
+        <div class="card-status">
+          <span class="lock-icon">🔒</span>
+        </div>
+        <div class="card-number">WEEK 16</div>
+        <div class="card-title">期末展示</div>
+      </div>
+
+    </main>
+
+    <!-- 頁尾 -->
+    <footer>
+      <p>© Web Development Journey • Keep Learning, Keep Growing</p>
+    </footer>
+
+  </div>
+
+</body>
+</html>
