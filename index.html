@@ -1,504 +1,342 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>作品集入口 | Portfolio Index</title>
-  
-  <!-- 導入 Google Fonts (Noto Serif TC, Outfit) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
-
-  <style>
-    /* ==========================================================================
-       變數與基礎設定 (莫蘭迪色系 Morandi Style)
-       ========================================================================== */
-    :root {
-      --bg-color: #f7f5f0;           /* 奶油米白背景 */
-      --card-bg: #ffffff;           /* 卡片純白背景 */
-      --text-main: #3d4340;         /* 莫蘭迪深灰綠 */
-      --text-muted: #8c9691;        /* 淡灰綠 */
-      --accent-green: #6a7f72;      /* 莫蘭迪質感綠 */
-      --accent-soft: #e8ece9;       /* 柔綠淺底 */
-      --locked-bg: #eaeaea;         /* 鎖定狀態卡片背景 */
-      --locked-text: #a0a0a0;       /* 鎖定文字顏色 */
-      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.03);
-      --shadow-hover: 0 12px 24px rgba(106, 127, 114, 0.15);
-      --transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Outfit', 'Noto Serif TC', serif, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 40px 20px;
-      position: relative;
-      overflow-x: hidden;
-    }
-
-    /* 頂部柔和暈光裝飾 */
-    .bg-glow {
-      position: absolute;
-      top: -150px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(106, 127, 114, 0.08) 0%, rgba(247, 245, 240, 0) 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .container {
-      max-width: 960px;
-      width: 100%;
-      z-index: 1;
-    }
-
-    /* ==========================================================================
-       個人資料卡片 (Profile Header)
-       ========================================================================== */
-    .profile-card {
-      text-align: center;
-      margin-bottom: 40px;
-      background: rgba(255, 255, 255, 0.6);
-      backdrop-filter: blur(8px);
-      padding: 32px 24px;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.8);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .avatar-wrapper {
-      position: relative;
-      display: inline-block;
-      margin-bottom: 16px;
-    }
-
-    .avatar {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 4px solid #fff;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-      transition: var(--transition);
-    }
-
-    .avatar-wrapper:hover .avatar {
-      transform: scale(1.05);
-    }
-
-    .status-badge {
-      position: absolute;
-      bottom: 4px;
-      right: 0;
-      background-color: var(--accent-green);
-      color: #fff;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 8px;
-      border-radius: 12px;
-      border: 2px solid #fff;
-    }
-
-    .user-name {
-      font-size: 1.8rem;
-      font-weight: 600;
-      letter-spacing: 1px;
-      color: var(--text-main);
-      margin-bottom: 8px;
-    }
-
-    .user-bio {
-      font-size: 0.95rem;
-      color: var(--text-muted);
-      margin-bottom: 20px;
-    }
-
-    /* 進度條設計 */
-    .progress-container {
-      max-width: 320px;
-      margin: 0 auto;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 8px;
-      background-color: #e0ded8;
-      border-radius: 10px;
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background-color: var(--accent-green);
-      border-radius: 10px;
-      transition: width 0.8s ease;
-    }
-
-    .progress-text {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      letter-spacing: 0.5px;
-    }
-
-    /* ==========================================================================
-       關卡卡片網格 (Grid Layout)
-       ========================================================================== */
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr); /* 電腦端 4 行排列 */
-      gap: 18px;
-    }
-
-    /* 卡片基礎樣式 */
-    .card {
-      position: relative;
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 20px;
-      min-height: 120px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      text-decoration: none;
-      border: 1px solid rgba(0, 0, 0, 0.03);
-      box-shadow: var(--shadow-sm);
-      transition: var(--transition);
-    }
-
-    .card-status {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .card-number {
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-    }
-
-    .card-title {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-top: 6px;
-    }
-
-    /* --------------------------------------------------------------------------
-       已解鎖卡片樣式 (Unlocked)
-       -------------------------------------------------------------------------- */
-    .card.unlocked {
-      color: var(--text-main);
-      border: 1px solid rgba(106, 127, 114, 0.2);
-      cursor: pointer;
-    }
-
-    .card.unlocked .badge {
-      background-color: var(--accent-soft);
-      color: var(--accent-green);
-      font-size: 0.7rem;
-      padding: 2px 8px;
-      border-radius: 8px;
-      font-weight: 600;
-    }
-
-    .card.unlocked .card-number {
-      color: var(--accent-green);
-    }
-
-    .card.unlocked .card-arrow {
-      position: absolute;
-      bottom: 16px;
-      right: 16px;
-      font-size: 0.9rem;
-      color: var(--accent-green);
-      opacity: 0;
-      transform: translateX(-6px);
-      transition: var(--transition);
-    }
-
-    /* 已解鎖 Hover 動畫 */
-    .card.unlocked:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-hover);
-      border-color: var(--accent-green);
-    }
-
-    .card.unlocked:hover .card-arrow {
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    /* --------------------------------------------------------------------------
-       未解鎖卡片樣式 (Locked)
-       -------------------------------------------------------------------------- */
-    .card.locked {
-      background-color: var(--locked-bg);
-      color: var(--locked-text);
-      cursor: not-allowed;
-      opacity: 0.75;
-    }
-
-    .card.locked .card-number,
-    .card.locked .card-title {
-      color: var(--locked-text);
-    }
-
-    .card.locked .lock-icon {
-      font-size: 0.9rem;
-      transition: transform 0.2s ease;
-    }
-
-    /* 未解鎖 Hover 鎖頭晃動動畫 */
-    .card.locked:hover {
-      transform: translateY(-2px);
-    }
-
-    .card.locked:hover .lock-icon {
-      animation: shake 0.4s ease-in-out;
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: rotate(0deg); }
-      25% { transform: rotate(-12deg); }
-      75% { transform: rotate(12deg); }
-    }
-
-    /* ==========================================================================
-       頁尾 (Footer)
-       ========================================================================== */
-    footer {
-      text-align: center;
-      margin-top: 48px;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    /* ==========================================================================
-       響應式設計 (RWD)
-       ========================================================================== */
-    /* 平板尺寸 (900px 以下)：改為 3 欄 */
-    @media (max-width: 900px) {
-      .grid-container {
-        grid-template-columns: repeat(3, 1fr);
-      }
-    }
-
-    /* 手機尺寸 (600px 以下)：改為 2 欄 */
-    @media (max-width: 600px) {
-      body {
-        padding: 24px 12px;
-      }
-      .grid-container {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-      }
-      .card {
-        padding: 16px;
-        min-height: 105px;
-      }
-      .user-name {
-        font-size: 1.5rem;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- 頂部背景微光裝飾 -->
-  <div class="bg-glow"></div>
-
-  <div class="container">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>網頁程式設計作品集 | Course Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Noto Serif TC & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif+TC:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <!-- 個人資料卡片區塊 -->
-    <header class="profile-card">
-      <div class="avatar-wrapper">
-        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=300" alt="大頭貼" class="avatar">
-        <span class="status-badge" title="學習進度中">LV.2</span>
-      </div>
-      <h1 class="user-name">Your Name</h1>
-      <p class="user-bio">靜心寫程式，用程式紀錄每一個學習里程碑。</p>
-      
-      <!-- 遊戲化進度條 -->
-      <div class="progress-container">
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: 12.5%;"></div>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        serene: {
+                            50: '#fbf9f5',
+                            100: '#f5f0e6',
+                            200: '#e8ddcb',
+                            300: '#d7c4a8',
+                            400: '#c3a883',
+                            500: '#b08e64',
+                            600: '#95714e',
+                            700: '#77573f',
+                            800: '#5f4636',
+                            900: '#4d392e',
+                        },
+                        sage: {
+                            100: '#eef2ed',
+                            200: '#d6e0d3',
+                            500: '#7a9a83',
+                            700: '#4a6352',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Noto Serif TC"', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Serif TC', sans-serif;
+            background-color: #f7f4ef;
+            color: #4a4038;
+            overflow-x: hidden;
+        }
+
+        /* 背景柔和波光 */
+        .ambient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 15% 20%, rgba(214, 224, 211, 0.45) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(232, 221, 203, 0.5) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(247, 244, 239, 1) 0%, rgba(240, 234, 224, 0.8) 100%);
+        }
+
+        /* 微浮光懸停卡片 */
+        .quest-card {
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 卡片光澤掠過效果 */
+        .quest-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.4),
+                transparent
+            );
+            transition: left 0.75s ease;
+            transform: skewX(-20deg);
+            pointer-events: none;
+        }
+
+        .quest-card:hover::before {
+            left: 160%;
+        }
+
+        /* 已解鎖卡片 Hover 效果 */
+        .quest-unlocked:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 16px 30px -10px rgba(122, 154, 131, 0.25), 0 0 15px rgba(176, 142, 100, 0.15);
+            border-color: #7a9a83;
+        }
+
+        /* 未解鎖卡片 微震晃動 */
+        .quest-locked {
+            filter: grayscale(20%);
+            opacity: 0.75;
+            transition: all 0.3s ease;
+        }
+
+        .quest-locked:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+            background-color: #f0eae1;
+        }
+
+        .shake-animation {
+            animation: gentleShake 0.4s ease-in-out;
+        }
+
+        @keyframes gentleShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-4px); }
+            40% { transform: translateX(4px); }
+            60% { transform: translateX(-2px); }
+            80% { transform: translateX(2px); }
+        }
+
+        /* 頭像微脈動光芒 */
+        .avatar-container {
+            position: relative;
+        }
+
+        .avatar-container::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, #7a9a83, #b08e64);
+            z-index: -1;
+            opacity: 0.6;
+            filter: blur(8px);
+            transition: opacity 0.3s ease;
+        }
+
+        .avatar-container:hover::after {
+            opacity: 0.9;
+            filter: blur(12px);
+        }
+
+        /* 自訂 Toast 提示動畫 */
+        #toast {
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between py-10 px-4 sm:px-6 lg:px-8">
+
+    <!-- 背景視覺 -->
+    <div class="ambient-bg"></div>
+
+    <header class="max-w-4xl mx-auto w-full text-center mb-10">
+        <!-- 學生大頭貼 -->
+        <div class="inline-block mb-4">
+            <div class="avatar-container w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1 bg-white shadow-md mx-auto relative group">
+                <!-- 頭像圖片：預設極簡繪畫風格頭像 (SVG Data URI) -->
+                <img 
+                    src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><circle cx='60' cy='60' r='60' fill='%23e8ddcb'/><circle cx='60' cy='48' r='22' fill='%2377573f'/><path d='M25 102c0-22 16-34 35-34s35 12 35 34' fill='%2377573f'/><circle cx='60' cy='45' r='18' fill='%23f5f0e6'/><path d='M42 48c0 10 8 18 18 18s18-8 18-18' fill='none' stroke='%235f4636' stroke-width='2.5' stroke-linecap='round'/></svg>" 
+                    alt="Student Avatar" 
+                    class="w-full h-full rounded-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    id="profile-avatar"
+                >
+                <span class="absolute bottom-1 right-1 bg-sage-500 text-white text-xs px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1 border border-white">
+                    <i class="fa-solid fa-leaf text-[10px]"></i> 在線
+                </span>
+            </div>
         </div>
-        <div class="progress-text">關卡完成度：2 / 16 (12.5%)</div>
-      </div>
+
+        <!-- 姓名與標題 -->
+        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold tracking-wide text-serene-900 mb-2">
+            網頁程式設計作品集
+        </h1>
+        <p class="text-sm sm:text-base text-serene-700 font-light max-w-md mx-auto mb-6 leading-relaxed">
+            靜心學習，積累每週的程式碼軌跡。<br class="hidden sm:inline">探索下方關卡卡片檢視作業成果。
+        </p>
+
+        <!-- 任務進度條 -->
+        <div class="max-w-xs sm:max-w-sm mx-auto bg-white/70 backdrop-blur-sm p-3 rounded-2xl border border-serene-200/80 shadow-sm">
+            <div class="flex justify-between items-center text-xs font-medium text-serene-800 mb-1.5 px-1">
+                <span class="flex items-center gap-1.5">
+                    <i class="fa-solid fa-compass text-sage-500"></i> 解鎖進度
+                </span>
+                <span id="progress-text" class="font-bold text-sage-700">2 / 16 (12.5%)</span>
+            </div>
+            <div class="w-full bg-serene-100 rounded-full h-2.5 overflow-hidden p-0.5 border border-serene-200">
+                <div id="progress-bar" class="bg-gradient-to-r from-sage-500 to-serene-400 h-full rounded-full transition-all duration-1000 ease-out" style="width: 12.5%;"></div>
+            </div>
+        </div>
     </header>
 
-    <!-- 關卡按鈕網格 (16 個) -->
-    <main class="grid-container">
-      
-      <!-- Week 1 (已解鎖) -->
-      <a href="w1/index.html" class="card unlocked">
-        <div class="card-status">
-          <span class="badge">已完成</span>
-        </div>
-        <div class="card-number">WEEK 01</div>
-        <div class="card-title">數位名片</div>
-        <div class="card-arrow">➔</div>
-      </a>
+    <main class="max-w-5xl mx-auto w-full mb-12">
+        <!-- 16 個按鈕網格 (響應式：手機1~2欄、平板3欄、電腦4欄) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5" id="quest-grid">
+            
+            <!-- Week 1 (已解鎖) -->
+            <a href="w1/index.html" class="quest-card quest-unlocked group bg-white/90 backdrop-blur-sm rounded-2xl p-5 border-2 border-sage-200 shadow-sm flex flex-col justify-between h-36 cursor-pointer">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-sage-100 text-sage-700 tracking-wider">
+                        WEEK 01
+                    </span>
+                    <span class="text-xs font-medium text-sage-500 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
+                        <i class="fa-solid fa-lock-open text-[10px]"></i> 已解鎖
+                    </span>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-serene-900 group-hover:text-sage-700 transition-colors line-clamp-1">
+                        數位名片
+                    </h3>
+                    <p class="text-xs text-serene-600 mt-1">個人品牌與 HTML 基礎</p>
+                </div>
+                <div class="flex justify-end items-center text-xs text-sage-500 group-hover:translate-x-1 transition-transform">
+                    前往作品 <i class="fa-solid fa-arrow-right ml-1"></i>
+                </div>
+            </a>
 
-      <!-- Week 2 (已解鎖) -->
-      <a href="w2/index.html" class="card unlocked">
-        <div class="card-status">
-          <span class="badge">已完成</span>
-        </div>
-        <div class="card-number">WEEK 02</div>
-        <div class="card-title">今天吃甚麼?</div>
-        <div class="card-arrow">➔</div>
-      </a>
+            <!-- Week 2 (已解鎖) -->
+            <a href="w2/index.html" class="quest-card quest-unlocked group bg-white/90 backdrop-blur-sm rounded-2xl p-5 border-2 border-sage-200 shadow-sm flex flex-col justify-between h-36 cursor-pointer">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-sage-100 text-sage-700 tracking-wider">
+                        WEEK 02
+                    </span>
+                    <span class="text-xs font-medium text-sage-500 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
+                        <i class="fa-solid fa-lock-open text-[10px]"></i> 已解鎖
+                    </span>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-serene-900 group-hover:text-sage-700 transition-colors line-clamp-1">
+                        今天吃甚麼?
+                    </h3>
+                    <p class="text-xs text-serene-600 mt-1">互動式選擇器與 CSS 樣式</p>
+                </div>
+                <div class="flex justify-end items-center text-xs text-sage-500 group-hover:translate-x-1 transition-transform">
+                    前往作品 <i class="fa-solid fa-arrow-right ml-1"></i>
+                </div>
+            </a>
 
-      <!-- Week 3 (未解鎖) -->
-      <div class="card locked">
-        <div class="card-status">
-          <span class="lock-icon">🔒</span>
+            <!-- Week 3 ~ 16 (未解鎖，JavaScript 動態生成的預設卡片) -->
+            <!-- 此處手動預備或由內嵌微型腳本補完 -->
         </div>
-        <div class="card-number">WEEK 03</div>
-        <div class="card-title">尚未解鎖</div>
-      </div>
-
-      <!-- Week 4 (未解鎖) -->
-      <div class="card locked">
-        <div class="card-status">
-          <span class="lock-icon">🔒</span>
-        </div>
-        <div class="card-number">WEEK 04</div>
-        <div class="card-title">尚未解鎖</div>
-      </div>
-
-      <!-- Week 5 (未解鎖) -->
-      <div class="card locked">
-        <div class="card-status">
-          <span class="lock-icon">🔒</span>
-        </div>
-        <div class="card-number">WEEK 05</div>
-        <div class="card-title">尚未解鎖</div>
-      </div>
-
-      <!-- Week 6 (未解鎖) -->
-      <div class="card locked">
-        <div class="card-status">
-          <span class="lock-icon">🔒</span>
-        </div>
-        <div class="card-number">WEEK 06</div>
-        <div class="card-title">尚未解鎖</div>
-      </div>
-
-      <!-- Week 7 (未解鎖) -->
-      <div class="card locked">
-        <div class="card-status">
-          <span class="lock-icon">🔒</span>
-        </div>
-        <div class="card-number">WEEK 07</div>
-        <div class="card-title">尚未解鎖</div>
-      </div>
-
-      <!-- Week 8 (未解鎖) -->
-      <div class="card locked">
-        <div class="card-status">
-          <span class="lock-icon">🔒</span>
-        </div>
-        <div class="card-number">WEEK 08</div>
-        <div class="card-title">尚未解鎖</div>
-      </div>
-
-      <!-- Week 9 (未解鎖) -->
-      <div class="card locked">
-        <div class="card-status">
-          <span class="lock-icon">🔒</span>
-        </div>
-        <div class="card-number">WEEK 09</div>
-        <div class="card-title">尚未解鎖</div>
-      </div>
-
-      <!-- Week 10 (未解鎖) -->
-      <div class="card locked">
-        <div class="card-status">
-          <span class="lock-icon">🔒</span>
-        </div>
-        <div class="card-number">WEEK 10</div>
-        <div class="card-title">尚未解鎖</div>
-      </div>
-
-      <!-- Week 11 (未解鎖) -->
-      <div class="card locked">
-        <div class="card-status">
-          <span class="lock-icon">🔒</span>
-        </div>
-        <div class="card-number">WEEK 11</div>
-        <div class="card-title">尚未解鎖</div>
-      </div>
-
-      <!-- Week 12 (未解鎖) -->
-      <div class="card locked">
-        <div class="card-status">
-          <span class="lock-icon">🔒</span>
-        </div>
-        <div class="card-number">WEEK 12</div>
-        <div class="card-title">尚未解鎖</div>
-      </div>
-
-      <!-- Week 13 (未解鎖) -->
-      <div class="card locked">
-        <div class="card-status">
-          <span class="lock-icon">🔒</span>
-        </div>
-        <div class="card-number">WEEK 13</div>
-        <div class="card-title">尚未解鎖</div>
-      </div>
-
-      <!-- Week 14 (未解鎖) -->
-      <div class="card locked">
-        <div class="card-status">
-          <span class="lock-icon">🔒</span>
-        </div>
-        <div class="card-number">WEEK 14</div>
-        <div class="card-title">尚未解鎖</div>
-      </div>
-
-      <!-- Week 15 (未解鎖) -->
-      <div class="card locked">
-        <div class="card-status">
-          <span class="lock-icon">🔒</span>
-        </div>
-        <div class="card-number">WEEK 15</div>
-        <div class="card-title">尚未解鎖</div>
-      </div>
-
-      <!-- Week 16 (未解鎖) -->
-      <div class="card locked">
-        <div class="card-status">
-          <span class="lock-icon">🔒</span>
-        </div>
-        <div class="card-number">WEEK 16</div>
-        <div class="card-title">期末展示</div>
-      </div>
-
     </main>
 
     <!-- 頁尾 -->
-    <footer>
-      <p>© Web Development Journey • Keep Learning, Keep Growing</p>
+    <footer class="text-center text-xs text-serene-600 border-t border-serene-200/60 pt-6 max-w-2xl mx-auto w-full">
+        <p class="tracking-wider">© 2026 Web Programming Course Portfolio • 靜心創作</p>
     </footer>
 
-  </div>
+    <!-- 未解鎖提示 Toast (預設隱藏) -->
+    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-serene-900/90 text-serene-50 text-sm py-3 px-6 rounded-full shadow-lg backdrop-blur-md opacity-0 pointer-events-none transform translate-y-4 flex items-center gap-2 z-50 border border-serene-700">
+        <span class="text-base">🔒</span>
+        <span id="toast-message">此章節尚未解鎖，請繼續保持探索！</span>
+    </div>
 
-</body>
-</html>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const grid = document.getElementById('quest-grid');
+
+            // 未解鎖週次的預設標題 (可自訂或保持通用)
+            const weekTitles = [
+                "尚未解鎖", "尚未解鎖", "尚未解鎖", "尚未解鎖",
+                "尚未解鎖", "尚未解鎖", "尚未解鎖", "尚未解鎖",
+                "尚未解鎖", "尚未解鎖", "尚未解鎖", "期末總複習",
+                "專題展示", "課程結業"
+            ];
+
+            // 自動動態產生 Week 3 到 Week 16 按鈕
+            for (let i = 3; i <= 16; i++) {
+                const weekIndex = i - 3;
+                const title = weekTitles[weekIndex] || "尚未解鎖";
+                
+                const card = document.createElement('a');
+                card.href = "javascript:void(0)";
+                card.className = "quest-card quest-locked group bg-serene-100/60 backdrop-blur-sm rounded-2xl p-5 border border-serene-200 shadow-none flex flex-col justify-between h-36 cursor-not-allowed select-none";
+                card.setAttribute('data-week', i);
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-serene-200/60 text-serene-700 tracking-wider opacity-80">
+                            WEEK ${i < 10 ? '0' + i : i}
+                        </span>
+                        <span class="text-xs font-medium text-serene-600 bg-serene-200/50 px-2 py-0.5 rounded-full flex items-center gap-1 border border-serene-300/40">
+                            🔒 未解鎖
+                        </span>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-medium text-serene-800/70 group-hover:text-serene-900 transition-colors line-clamp-1">
+                            Week ${i} - ${title}
+                        </h3>
+                        <p class="text-xs text-serene-500 mt-1">任務鎖定中</p>
+                    </div>
+                    <div class="flex justify-between items-center text-xs text-serene-500">
+                        <span class="text-[11px] opacity-70">需要完成前置任務</span>
+                        <i class="fa-solid fa-lock text-serene-400"></i>
+                    </div>
+                `;
+
+                // 點擊未解鎖卡片時引發溫和提示與動態震晃
+                card.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showToast(`Week ${i} 關卡尚未解鎖！請先完成前置作業 ✨`);
+                    
+                    card.classList.add('shake-animation');
+                    setTimeout(() => {
+                        card.classList.remove('shake-animation');
+                    }, 400);
+                });
+
+                grid.appendChild(card);
+            }
+        });
+
+        // Toast 顯示邏輯
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            
+            toastMsg.textContent = message;
+            
+            toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-4');
+            }, 2500);
+        }
+    </script>
