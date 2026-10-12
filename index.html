@@ -248,7 +248,28 @@
                 </div>
             </a>
 
-            <!-- Week 3 ~ 16 (未解鎖，JavaScript 動態生成的預設卡片) -->
+            <!-- Week 3 (已解鎖) -->
+            <a href="w3/index.html" class="quest-card quest-unlocked group bg-white/90 backdrop-blur-sm rounded-2xl p-5 border-2 border-sage-200 shadow-sm flex flex-col justify-between h-36 cursor-pointer">
+                <div class="flex justify-between items-start">
+                    <span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-sage-100 text-sage-700 tracking-wider">
+                        WEEK 03
+                    </span>
+                    <span class="text-xs font-medium text-sage-500 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
+                        <i class="fa-solid fa-lock-open text-[10px]"></i> 已解鎖
+                    </span>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-serene-900 group-hover:text-sage-700 transition-colors line-clamp-1">
+                        迷音圖產生器
+                    </h3>
+                    <p class="text-xs text-serene-600 mt-1">互動式選擇器與 CSS 樣式</p>
+                </div>
+                <div class="flex justify-end items-center text-xs text-sage-500 group-hover:translate-x-1 transition-transform">
+                    前往作品 <i class="fa-solid fa-arrow-right ml-1"></i>
+                </div>
+            </a>
+            
+            <!-- Week 4 ~ 16 (未解鎖，JavaScript 動態生成的預設卡片) -->
             <!-- 此處手動預備或由內嵌微型腳本補完 -->
         </div>
     </main>
@@ -270,14 +291,14 @@
 
             // 未解鎖週次的預設標題 (可自訂或保持通用)
             const weekTitles = [
-                "尚未解鎖", "尚未解鎖", "尚未解鎖", "尚未解鎖",
+                 "尚未解鎖", "尚未解鎖", "尚未解鎖",
                 "尚未解鎖", "尚未解鎖", "尚未解鎖", "尚未解鎖",
                 "尚未解鎖", "尚未解鎖", "尚未解鎖", "期末總複習",
                 "專題展示", "課程結業"
             ];
 
-            // 自動動態產生 Week 3 到 Week 16 按鈕
-            for (let i = 3; i <= 16; i++) {
+            // 自動動態產生 Week 4 到 Week 16 按鈕
+            for (let i = 4; i <= 16; i++) {
                 const weekIndex = i - 3;
                 const title = weekTitles[weekIndex] || "尚未解鎖";
                 
