@@ -4,16 +4,105 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>個人數位名片</title>
-    <!-- 連結外部的 CSS 檔案 -->
-    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 基礎全域設定 */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, "Microsoft JhengHei";
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* 名片外框卡片 */
+        .profile-card {
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            width: 320px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .profile-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* 圓形大頭貼照片 */
+        .avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #e0e7ff;
+            margin-bottom: 15px;
+        }
+
+        /* 名字與自我介紹 */
+        .name {
+            font-size: 24px;
+            color: #1e293b;
+            margin: 10px 0 5px 0;
+        }
+        .bio {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.5;
+            margin-bottom: 25px;
+        }
+
+        /* 按鈕區塊 */
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* 通用按鈕樣式 */
+        .btn {
+            display: block;
+            text-decoration: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        /* Instagram 按鈕 */
+        .btn-instagram {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(220, 39, 67, 0.2);
+        }
+        .btn-instagram:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(220, 39, 67, 0.3);
+        }
+
+        /* Email 按鈕 */
+        .btn-email {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+        /* Email 滑鼠懸停效果 */
+        .btn-email:hover {
+            background-color: #bae6fd;
+            transform: translateY(-2px); /* 輕微向上浮動 */
+            box-shadow: 0 6px 12px rgba(3, 105, 161, 0.15);
+        }
+    </style>
 </head>
 <body>
 
     <!-- 名片外框卡片 -->
     <div class="profile-card">
         
-        <!-- 1. 圓形大頭貼照片（請將 src 後面換成你的圖片網址或檔名） -->
-        <img src=https://lurl.cc/PegQY alt="大頭貼" class="avatar">
+        <!-- 1. 圓形大頭貼照片 -->
+        <img src="https://lurl.cc/PegQY" alt="大頭貼" class="avatar">
         
         <!-- 2. 名字與自我介紹 -->
         <h1 class="name">許文齡</h1>
@@ -21,10 +110,10 @@
         
         <!-- 3. 按鈕區塊 -->
         <div class="buttons-container">
-            <!-- Instagram 按鈕（請將 href 後面換成你的 IG 連結） -->
+            <!-- Instagram 按鈕 -->
             <a href="https://instagram.com" target="_blank" class="btn btn-instagram">Instagram</a>
             
-            <!-- Email 按鈕（請將 href 後面換成你的 Email） -->
+            <!-- Email 按鈕 -->
             <a href="mailto:your-email@example.com" class="btn btn-email">Email</a>
         </div>
         
