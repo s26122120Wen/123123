@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>網頁程式課作品集 | Course Portfolio</title>
   <!-- 引入 Google Fonts 提升文靜質感 -->
-  <link rel="preconnect" href="https://googleapis.com">
-  <link rel="preconnect" href="https://gstatic.com" crossorigin>
-  <link href="https://googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   
   <style>
     /* ==========================================
@@ -58,227 +58,404 @@
     }
 
     /* ==========================================
-       頁首區塊 (Header)
+       個人頭像與簡介區域 (Header)
        ========================================== */
-    header {
+    .profile-card {
       text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 2.5rem;
+      animation: fadeInDown 0.8s ease-out;
     }
 
-    .subtitle {
-      font-size: 0.85rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--accent-color);
-      font-weight: 600;
-      margin-bottom: 0.5rem;
+    .avatar-wrapper {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      margin: 0 auto 1.2rem;
+      border-radius: 50%;
+      padding: 5px;
+      background: linear-gradient(135deg, #d8dfd9, #e5e0d8);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
     }
 
-    h1 {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 2rem;
+    .avatar-wrapper:hover {
+      transform: scale(1.03);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .avatar {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      background-color: #dcd7ce;
+      display: block;
+    }
+
+    .profile-title {
+      font-size: 1.6rem;
       font-weight: 600;
+      letter-spacing: 0.05em;
       color: var(--text-main);
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.4rem;
     }
 
-    .desc {
+    .profile-subtitle {
       font-size: 0.95rem;
       color: var(--text-sub);
+      font-weight: 400;
+      letter-spacing: 0.02em;
     }
 
     /* ==========================================
-       作品集網格與卡片樣式 (Portfolio Grid & Cards)
+       關卡地圖網格 (16個按鈕)
        ========================================== */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.5rem;
+    .grid-container {
       width: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr); /* 預設電腦版 4 欄 */
+      gap: 16px;
+      animation: fadeInUp 0.8s ease-out 0.2s both;
     }
 
-    .card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 1.75rem;
-      text-decoration: none;
-      color: inherit;
-      box-shadow: var(--shadow-sm);
-      transition: var(--transition);
+    /* 按鈕基礎樣式 */
+    .level-btn {
+      position: relative;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 180px;
-      position: relative;
+      min-height: 110px;
+      padding: 1.1rem;
+      border-radius: 16px;
+      text-decoration: none;
+      transition: var(--transition);
       overflow: hidden;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
     }
 
-    /* 已解鎖卡片 Hover 效果 */
-    .card:not(.locked):hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--accent-color);
-    }
-
-    .card-header {
+    /* 頂部標籤列 */
+    .btn-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.25rem;
-    }
-
-    .week-badge {
       font-size: 0.8rem;
-      font-weight: 600;
-      padding: 0.35rem 0.85rem;
-      border-radius: 999px;
-      background-color: var(--accent-light);
-      color: var(--accent-color);
-      letter-spacing: 0.05em;
-    }
-
-    .status-icon {
-      font-size: 0.9rem;
-      color: var(--accent-color);
-      transition: var(--transition);
-    }
-
-    .card:not(.locked):hover .status-icon {
-      transform: translateX(4px);
-    }
-
-    .card-title {
-      font-family: 'Noto Serif TC', serif;
-      font-size: 1.25rem;
-      font-weight: 600;
+      font-weight: 500;
       margin-bottom: 0.5rem;
-      color: var(--text-main);
     }
 
-    .card-desc {
-      font-size: 0.9rem;
-      color: var(--text-sub);
-      line-height: 1.5;
-    }
-
-    /* 未解鎖卡片樣式 */
-    .card.locked {
-      background-color: var(--locked-bg);
-      border-color: transparent;
-      box-shadow: none;
-      cursor: not-allowed;
+    .week-tag {
+      letter-spacing: 0.05em;
       opacity: 0.85;
     }
 
-    .card.locked .week-badge {
-      background-color: rgba(160, 156, 150, 0.15);
+    .status-badge {
+      font-size: 0.85rem;
+    }
+
+    /* 主標題 */
+    .btn-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.4;
+      margin-top: auto;
+    }
+
+    /* ------------------------------------------
+       狀態 1：已解鎖按鈕 (Unlocked)
+       ------------------------------------------ */
+    .level-btn.unlocked {
+      background-color: var(--card-bg);
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .level-btn.unlocked .week-tag {
+      color: var(--accent-color);
+    }
+
+    /* 解鎖懸停效果 (Hover Animation) */
+    .level-btn.unlocked::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.6),
+        transparent
+      );
+      transition: 0.6s;
+    }
+
+    .level-btn.unlocked:hover {
+      transform: translateY(-6px);
+      border-color: var(--accent-color);
+      box-shadow: var(--shadow-lg);
+      background-color: #fafbf9;
+    }
+
+    .level-btn.unlocked:hover::before {
+      left: 100%;
+    }
+
+    .level-btn.unlocked:hover .btn-title {
+      color: var(--accent-color);
+    }
+
+    /* ------------------------------------------
+       狀態 2：未解鎖按鈕 (Locked)
+       ------------------------------------------ */
+    .level-btn.locked {
+      background-color: var(--locked-bg);
+      color: var(--locked-text);
+      border-color: transparent;
+      cursor: not-allowed;
+      user-select: none;
+    }
+
+    .level-btn.locked .week-tag {
       color: var(--locked-text);
     }
 
-    .card.locked .card-title,
-    .card.locked .card-desc,
-    .card.locked .status-icon {
-      color: var(--locked-text);
+    /* 未解鎖懸停微動畫 (抖動反饋) */
+    .level-btn.locked:hover {
+      animation: lockShake 0.4s ease;
+      background-color: #e5e3dd;
     }
 
     /* ==========================================
-       頁尾 (Footer)
+       響應式設計 (Responsive Design)
        ========================================== */
-    footer {
-      margin-top: 3.5rem;
-      font-size: 0.85rem;
-      color: var(--text-sub);
+    /* 平板尺寸 (900px 以下) -> 改為 3 欄 */
+    @media (max-width: 900px) {
+      .grid-container {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* 中小型平板 (680px 以下) -> 改為 2 欄 */
+    @media (max-width: 680px) {
+      .grid-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      
+      .level-btn {
+        min-height: 100px;
+        padding: 0.95rem;
+      }
+
+      .btn-title {
+        font-size: 0.9rem;
+      }
+    }
+
+    /* 手機螢幕 (400px 以下) -> 改為 1 欄或維持精緻 2 欄 */
+    @media (max-width: 400px) {
+      body {
+        padding: 1.5rem 1rem;
+      }
+      .grid-container {
+        grid-template-columns: repeat(2, 1fr); /* 手機版雙欄更齊整 */
+        gap: 10px;
+      }
+    }
+
+    /* ==========================================
+       CSS Keyframe 動畫
+       ========================================== */
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes lockShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-3px); }
+      40%, 80% { transform: translateX(3px); }
     }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <header>
-      <div class="subtitle">Course Portfolio</div>
-      <h1>網頁程式課作品集</h1>
-      <p class="desc">記錄每週的學習軌跡與互動網頁實作</p>
+    <!-- 個人資訊標頭 -->
+    <header class="profile-card">
+      <div class="avatar-wrapper">
+        <!-- 假頭像預設，可替換為個人照片檔名如 avatar.jpg -->
+        <img class="avatar" src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=QuietStudent" alt="大頭貼" />
+      </div>
+      <h1 class="profile-title">學習作品集</h1>
+      <p class="profile-subtitle">Web Development Journey • 16 Challenges</p>
     </header>
 
-    <main class="grid">
-      <!-- Week 1 -->
-      <a href="week1/index.html" class="card">
-        <div class="card-header">
-          <span class="week-badge">WEEK 01</span>
-          <span class="status-icon">→</span>
+    <!-- 16 個關卡按鈕區塊 -->
+    <main class="grid-container">
+
+      <!-- Week 1 (已解鎖) -->
+      <a href="w1/index.html" class="level-btn unlocked">
+        <div class="btn-header">
+          <span class="week-tag">WEEK 01</span>
+          <span class="status-badge">✨</span>
         </div>
-        <div>
-          <h2 class="card-title">個人自我介紹</h2>
-          <p class="card-desc">HTML 基礎架構與 CSS 排版初探</p>
-        </div>
+        <div class="btn-title">數位名片</div>
       </a>
 
-      <!-- Week 2 -->
-      <a href="week2/index.html" class="card">
-        <div class="card-header">
-          <span class="week-badge">WEEK 02</span>
-          <span class="status-icon">→</span>
+      <!-- Week 2 (已解鎖) -->
+      <a href="w2/index.html" class="level-btn unlocked">
+        <div class="btn-header">
+          <span class="week-tag">WEEK 02</span>
+          <span class="status-badge">✨</span>
         </div>
-        <div>
-          <h2 class="card-title">主題式網頁設計</h2>
-          <p class="card-desc">Flexbox 彈性佈局與色彩搭配練習</p>
-        </div>
+        <div class="btn-title">今天吃甚麼?</div>
       </a>
 
-      <!-- Week 3 -->
-      <a href="week3/index.html" class="card">
-        <div class="card-header">
-          <span class="week-badge">WEEK 03</span>
-          <span class="status-icon">→</span>
+      <!-- Week 3 (已解鎖) -->
+      <a href="w3/index.html" class="level-btn unlocked">
+        <div class="btn-header">
+          <span class="week-tag">WEEK 03</span>
+          <span class="status-badge">✨</span>
         </div>
-        <div>
-          <h2 class="card-title">互動計數器</h2>
-          <p class="card-desc">JavaScript DOM 操作與事件監聽</p>
-        </div>
+        <div class="btn-title">迷因解鎖器</div>
       </a>
 
-      <!-- Week 4 -->
-      <a href="week4/index.html" class="card">
-        <div class="card-header">
-          <span class="week-badge">WEEK 04</span>
-          <span class="status-icon">→</span>
-        </div>
-        <div>
-          <h2 class="card-title">待辦事項清單</h2>
-          <p class="card-desc">陣列資料處理與動態新增刪除元素</p>
-        </div>
-      </a>
+     <!-- Week 4 (已解鎖) -->
+<a href="w4/index.html" class="level-btn unlocked">
+  <div class="btn-header">
+    <span class="week-tag">WEEK 04</span>
+    <span class="status-badge">✨</span>
+  </div>
+  <div class="btn-title">悄悄話</div>
+</a>
 
-      <!-- Week 5 (已解鎖：心電感應) -->
-      <a href="week5/index.html" class="card">
-        <div class="card-header">
-          <span class="week-badge">WEEK 05</span>
-          <span class="status-icon">→</span>
+      <!-- Week 5 (已解鎖) -->
+     <a href="w5/index.html" class="level-btn unlocked">
+        <div class="btn-header">
+          <span class="week-tag">WEEK 05</span>
+          <span class="status-badge">✨</span>
         </div>
-        <div>
-          <h2 class="card-title">心電感應</h2>
-          <p class="card-desc">直覺與默契的互動網頁小遊戲</p>
-        </div>
+        <div class="btn-title">心電感應</div>
       </a>
 
       <!-- Week 6 (未解鎖) -->
-      <div class="card locked">
-        <div class="card-header">
-          <span class="week-badge">WEEK 06</span>
-          <span class="status-icon">🔒</span>
+      <a class="level-btn locked">
+        <div class="btn-header">
+          <span class="week-tag">WEEK 06</span>
+          <span class="status-badge">🔒</span>
         </div>
-        <div>
-          <h2 class="card-title">敬請期待</h2>
-          <p class="card-desc">課程進度尚未解鎖</p>
+        <div class="btn-title">未解鎖關卡</div>
+      </a>
+
+      <!-- Week 7 (未解鎖) -->
+      <a class="level-btn locked">
+        <div class="btn-header">
+          <span class="week-tag">WEEK 07</span>
+          <span class="status-badge">🔒</span>
         </div>
-      </div>
+        <div class="btn-title">未解鎖關卡</div>
+      </a>
+
+      <!-- Week 8 (未解鎖) -->
+      <a class="level-btn locked">
+        <div class="btn-header">
+          <span class="week-tag">WEEK 08</span>
+          <span class="status-badge">🔒</span>
+        </div>
+        <div class="btn-title">未解鎖關卡</div>
+      </a>
+
+      <!-- Week 9 (未解鎖) -->
+      <a class="level-btn locked">
+        <div class="btn-header">
+          <span class="week-tag">WEEK 09</span>
+          <span class="status-badge">🔒</span>
+        </div>
+        <div class="btn-title">未解鎖關卡</div>
+      </a>
+
+      <!-- Week 10 (未解鎖) -->
+      <a class="level-btn locked">
+        <div class="btn-header">
+          <span class="week-tag">WEEK 10</span>
+          <span class="status-badge">🔒</span>
+        </div>
+        <div class="btn-title">未解鎖關卡</div>
+      </a>
+
+      <!-- Week 11 (未解鎖) -->
+      <a class="level-btn locked">
+        <div class="btn-header">
+          <span class="week-tag">WEEK 11</span>
+          <span class="status-badge">🔒</span>
+        </div>
+        <div class="btn-title">未解鎖關卡</div>
+      </a>
+
+      <!-- Week 12 (未解鎖) -->
+      <a class="level-btn locked">
+        <div class="btn-header">
+          <span class="week-tag">WEEK 12</span>
+          <span class="status-badge">🔒</span>
+        </div>
+        <div class="btn-title">未解鎖關卡</div>
+      </a>
+
+      <!-- Week 13 (未解鎖) -->
+      <a class="level-btn locked">
+        <div class="btn-header">
+          <span class="week-tag">WEEK 13</span>
+          <span class="status-badge">🔒</span>
+        </div>
+        <div class="btn-title">未解鎖關卡</div>
+      </a>
+
+      <!-- Week 14 (未解鎖) -->
+      <a class="level-btn locked">
+        <div class="btn-header">
+          <span class="week-tag">WEEK 14</span>
+          <span class="status-badge">🔒</span>
+        </div>
+        <div class="btn-title">未解鎖關卡</div>
+      </a>
+
+      <!-- Week 15 (未解鎖) -->
+      <a class="level-btn locked">
+        <div class="btn-header">
+          <span class="week-tag">WEEK 15</span>
+          <span class="status-badge">🔒</span>
+        </div>
+        <div class="btn-title">未解鎖關卡</div>
+      </a>
+
+      <!-- Week 16 (未解鎖) -->
+      <a class="level-btn locked">
+        <div class="btn-header">
+          <span class="week-tag">WEEK 16</span>
+          <span class="status-badge">🔒</span>
+        </div>
+        <div class="btn-title">未解鎖關卡</div>
+      </a>
+
     </main>
-
-    <footer>
-      <p>© 2026 網頁程式設計課程作品集</p>
-    </footer>
   </div>
-
-</body>
-</html>
